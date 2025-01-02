@@ -1,72 +1,106 @@
 document.addEventListener('DOMContentLoaded', () => {
     const uploadForm = document.getElementById('uploadForm');
     const fileInput = document.getElementById('videoFile');
-    const progressBar = document.getElementById('uploadProgress');
-    const progress = progressBar.querySelector('.progress');
-    const progressText = progressBar.querySelector('.progress-text');
-    const uploadedFiles = document.getElementById('uploadedFiles');
-    const fileDummy = document.querySelector('.file-dummy');
+    const dropZone = document.querySelector('.drop-zone');
+    const fileInfo = document.querySelector('.file-info');
+    const progressWrapper = document.getElementById('uploadProgress');
+    const progress = progressWrapper.querySelector('.progress');
+    const progressText = progressWrapper.querySelector('.progress-text');
+    const uploadButton = document.getElementById('uploadBtn');
+
+    // Drag and drop handlers
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, () => {
+            dropZone.classList.add('drag-active');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, () => {
+            dropZone.classList.remove('drag-active');
+        });
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        fileInput.files = files;
+        updateFileInfo(files[0]);
+    });
 
     fileInput.addEventListener('change', (e) => {
-        const fileName = e.target.files[0]?.name;
-        if (fileName) {
-            fileDummy.querySelector('.default').style.display = 'none';
-            fileDummy.querySelector('.selected').style.display = 'block';
-            fileDummy.querySelector('.selected').textContent = `Selected: ${fileName}`;
-        }
+        updateFileInfo(e.target.files[0]);
     });
+
+    function updateFileInfo(file) {
+        if (file) {
+            fileInfo.textContent = `Selected: ${file.name}`;
+            fileInfo.style.display = 'block';
+        }
+    }
 
     uploadForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const formData = new FormData(uploadForm);
         
         if (!fileInput.files[0]) {
             alert('Please select a video file');
             return;
         }
 
-        progressBar.style.display = 'block';
+        const formData = new FormData(uploadForm);
+        uploadButton.disabled = true;
+        progressWrapper.style.display = 'block';
+
         const xhr = new XMLHttpRequest();
 
         xhr.upload.addEventListener('progress', (e) => {
             if (e.lengthComputable) {
                 const percentComplete = (e.loaded / e.total) * 100;
                 progress.style.width = percentComplete + '%';
-                progressText.textContent = Math.round(percentComplete) + '%';
+                progressText.textContent = `${Math.round(percentComplete)}%`;
+                
+                if (percentComplete === 100) {
+                    progressText.textContent = 'Processing video...';
+                }
             }
         });
 
         xhr.onload = function() {
             if (xhr.status === 200) {
                 const response = JSON.parse(xhr.response);
-                const fileItem = document.createElement('div');
-                fileItem.className = 'file-item';
-                fileItem.innerHTML = `
-                    <span>${response.filename}</span>
-                    <small>Upload complete</small>
-                `;
-                uploadedFiles.appendChild(fileItem);
+                progressText.textContent = 'Upload complete!';
+                setTimeout(() => {
+                    window.location.href = '/videos.html';
+                }, 1000);
             } else {
                 alert('Upload failed');
+                resetUpload();
             }
-            resetUploadForm();
         };
 
         xhr.onerror = function() {
             alert('Upload failed');
-            resetUploadForm();
+            resetUpload();
         };
 
         xhr.open('POST', '/upload', true);
         xhr.send(formData);
     });
 
-    function resetUploadForm() {
+    function resetUpload() {
         uploadForm.reset();
-        progressBar.style.display = 'none';
+        uploadButton.disabled = false;
+        progressWrapper.style.display = 'none';
         progress.style.width = '0%';
         progressText.textContent = '0%';
-        fileDummy.querySelector('.default').style.display = 'block';
-        fileDummy.querySelector('.selected').style.display = 'none';
+        fileInfo.style.display = 'none';
     }
 });

@@ -1,40 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Video Upload</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="container">
-      <div class="upload-box">
-        <div class="header">
-          <h2>Upload Video</h2>
-          <a href="/videos.html" class="view-videos-btn">View Videos</a>
-        </div>
-        <form id="uploadForm">
-          <div class="file-area">
-            <input
-              type="file"
-              id="videoFile"
-              name="video"
-              accept="video/mp4,video/mkv,.mkv"
-              required
-            />
-            <div class="file-dummy">
-              <div class="default">Drop video file here or click to select</div>
-              <div class="selected"></div>
-            </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Upload & Segment</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+      <nav class="navbar">
+          <div class="logo">VideoSegment</div>
+          <div class="nav-links">
+              <a href="/" class="active">Upload</a>
+              <a href="/videos.html">My Videos</a>
           </div>
-          <button type="submit" id="uploadBtn">Upload Video</button>
-        </form>
-        <div id="uploadProgress" class="progress-bar">
-          <div class="progress"></div>
-          <div class="progress-text">0%</div>
-        </div>
+      </nav>
+
+      <div class="upload-container">
+          <div class="upload-box">
+              <h2>Upload Your Video</h2>
+              <p class="subtitle">Videos will be segmented into 20-second clips</p>
+                
+              <form id="uploadForm">
+                  <div class="drop-zone">
+                      <input type="file" id="videoFile" name="video" accept="video/mp4,video/mkv,.mkv" required>
+                      <div class="drop-zone-content">
+                          <img src="upload-icon.svg" alt="Upload" class="upload-icon">
+                          <p>Drag and drop video here or click to browse</p>
+                          <span class="file-info"></span>
+                      </div>
+                  </div>
+
+                  <div id="uploadProgress" class="progress-wrapper">
+                      <div class="progress-bar">
+                          <div class="progress"></div>
+                      </div>
+                      <div class="progress-text">0%</div>
+                  </div>
+
+                  <button type="submit" id="uploadBtn" class="upload-button">
+                      <span class="button-text">Upload Video</span>
+                      <span class="button-icon">→</span>
+                  </button>
+              </form>
+
+              <div class="upload-info">
+                  <h3>Supported Formats</h3>
+                  <ul>
+                      <li>MP4 Video (.mp4)</li>
+                      <li>Matroska Video (.mkv)</li>
+                  </ul>
+              </div>
+          </div>
       </div>
-    </div>
-    <script src="app.js"></script>
-  </body>
+  </div>
+  <script src="app.js"></script>
+</body>
 </html>

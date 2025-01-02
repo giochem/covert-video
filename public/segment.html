@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Segments Player</title>
+    <link rel="stylesheet" href="segment.css" />
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar">
+        <div class="logo">VideoSegment</div>
+        <div class="nav-links">
+          <a href="/">Upload</a>
+          <a href="/videos.html">My Videos</a>
+          <a href="/segment.html" class="active">Segments</a>
+        </div>
+      </nav>
+
+      <div class="player-container">
+        <div class="video-section">
+          <video id="videoPlayer" controls></video>
+          <div class="video-info">
+            <h2 id="videoTitle">Video Title</h2>
+            <p id="currentSegment"></p>
+          </div>
+        </div>
+
+        <div class="segments-section">
+          <h3>Video Segments</h3>
+          <div class="device-quality-selection">
+            <label for="deviceSelect">Device:</label>
+            <select id="deviceSelect">
+              <option value="desktop">Desktop</option>
+              <option value="mobile">Mobile</option>
+            </select>
+            <label for="qualitySelect">Quality:</label>
+            <select id="qualitySelect">
+              <option value="720p">720p</option>
+              <option value="360p">360p</option>
+            </select>
+          </div>
+          <div class="segments-grid" id="segmentsList"></div>
+        </div>
+      </div>
+    </div>
+    <script src="segment.js"></script>
+  </body>
+</html>
